@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 import sys, tty, termios        # 맥에서 엔터 없이 인풋받아오는게 안돼서..
 
 ########### 최적화는 이거 수정하면 될것 같습니다 #############
-_QUANTIZATED_HUE_ = 70              # 색조 : 70
-_QUANTIZATED_SATURATION_ = 100      # 채도 : 100
-_VAL_THRESHOLD_ = 60                # 임계값 : 50
+_QUANTIZATED_HUE_ = 60              # 색조 : 70
+_QUANTIZATED_SATURATION_ = 64      # 채도 : 100
+_VAL_THRESHOLD_ = 50                # 임계값 : 50
 
 # 이미지 로드
 print("이미지 로드\n")
