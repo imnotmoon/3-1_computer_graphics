@@ -13,7 +13,12 @@ hist_roi = cv2.calcHist([hsv], [0, 1], None, [60, 64], [0, 180, 0, 256])
 
 # 히스토그램 정규화 이후 대상 이미지에 역투영
 cv2.normalize(hist_roi, hist_roi, 0, 255, cv2.NORM_MINMAX)
+cv2.imshow('histo', hist_roi)
+cv2.waitKey(0)
+
 dst = cv2.calcBackProject([hsvt], [0, 1], hist_roi, [0, 180, 0, 256], 1)
+cv2.imshow('dst', dst)
+cv2.waitKey(0)
 
 # 타원모양 커널을 사용하여 컨벌루션
 disc = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
