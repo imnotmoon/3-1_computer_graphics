@@ -1,31 +1,45 @@
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
+from msvcrt import getch
 
 ########### 최적화는 이거 수정하면 될것 같습니다 #############
 _QUANTIZATED_HUE_ = 70              # 색조 : 70
 _QUANTIZATED_SATURATION_ = 100      # 채도 : 100
 _VAL_THRESHOLD_ = 50                # 임계값 : 50
 
+
 # 스페이스바 입력시 plt창을 끄게 만드는 함수입니다.
 def quit_figure(event):
     if event.key == ' ':
         plt.close(event.canvas.figure)
 
+
+# 스페이스바 체크 함수
+def space_check():
+    print("다음으로 진행하기 위해 스페이스를 눌러주세요\n")
+    while True:
+        if ord(getch()) == 32:
+            break
+
+
 # 이미지 로드
+space_check()
 print("이미지 로드\n")
 model_image1 = cv2.imread('models.png')
 target_image = cv2.imread('target.jfif')
+space_check()
 
 # HSV 변환
 print("HSV 변환\n")
 palette1 = cv2.cvtColor(model_image1, cv2.COLOR_BGR2HSV)
 hsvt = cv2.cvtColor(target_image, cv2.COLOR_BGR2HSV)
+space_check()
 
 # 오브젝트 히스토그램 추출 [H,S]
 # hist_roi = cv2.calcHist([palette1], [0, 1], None, [_QUANTIZATED_HUE_, _QUANTIZATED_SATURATION_], [0, 180, 0, 256])
 # 2-A
-print("오브젝트 히스토그램 추출 [H,S]\n")
+print("모델 영상의 오브젝트 히스토그램 생성중입니다.\n")
 height, width = palette1.shape[:2]
 hist_roi=np.zeros((_QUANTIZATED_HUE_, _QUANTIZATED_SATURATION_))
 a=180/_QUANTIZATED_HUE_
@@ -36,14 +50,13 @@ for j in range(height):     # 모든 픽셀을 탐색하여 히스토그램 생�
         s=int(palette1[j][i][1]/b)
         hist_roi[h][s]+=1
 
-cv2.imshow('selfmade hist', hist_roi)
-cv2.waitKey(0)
-
+print("히스토그램 생성 완료\n")
+space_check()
 
 # 2-C
 print("정규화한 히스토그램의 그래프\n")
 cv2.normalize(hist_roi, hist_roi, 0, 255, cv2.NORM_MINMAX)
-print(hist_roi.shape[0], hist_roi.shape[1])
+# print(hist_roi.shape[0], hist_roi.shape[1])
 cv2.imshow('normalized selfmade hist', hist_roi)
 cv2.waitKey(0)
 
@@ -90,6 +103,7 @@ cv2.waitKey(0)
 
 
 # 오츄의 알고리즘을 이용한 이진화
+print("오츄의 알고리즘을 이용한 이진화\n")
 ret2, thresh2 = cv2.threshold(dst, 0, 255, cv2.THRESH_OTSU)
 thresh_with_otsu_algorithm = cv2.merge((thresh2, thresh2, thresh2))
 res_with_otsu_algorithm = cv2.bitwise_and(target_image, thresh_with_otsu_algorithm)
