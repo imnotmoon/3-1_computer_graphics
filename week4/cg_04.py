@@ -4,15 +4,22 @@ import numpy as np
 
 _QUANTIZATED_HUE_ = 100              # 색조 : 70
 _QUANTIZATED_SATURATION_ = 150      # 채도 : 100
-_VAL_THRESHOLD_ = 70                # 임계값 : 50
+_VAL_THRESHOLD_ = 30                # 임계값 : 50
 
-# 모델이미지 로드 + HSV변환 + 히스토그램 추출
+# 모델이미지 로드
 model_image = cv2.imread("models.png")
+# HSV 변환
 palette = cv2.cvtColor(model_image, cv2.COLOR_BGR2HSV)
+# 모델 히스토그램 추출
 hist_roi = cv2.calcHist([palette], [0, 1], None, [_QUANTIZATED_HUE_, _QUANTIZATED_SATURATION_], [0, 180, 0, 256])
+# 모델 히스토그램 정규화
+cv2.normalize(hist_roi,hist_roi, 0, 255, cv2.NORM_MINMAX)
 
 def detect_face(frame) :
-    dst = cv2.calcBackProject([frame], [0, 1], hist_roi, [0, 180, 0, 256], 1)
+    # 입력 이미지 HSV 변환
+    hsvt=cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
+    # 모델 히스토그램을 입력 영상에 역투영
+    dst = cv2.calcBackProject([hsvt], [0, 1], hist_roi, [0, 180, 0, 256], 1)
 
     disc = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
     cv2.filter2D(dst, -1, disc, dst)
@@ -26,7 +33,6 @@ def detect_face(frame) :
 # 캠
 cap = cv2.VideoCapture(0)
 print("camera initialized")
-
 gaussian_kernel_size = 5
 
 while True:
@@ -42,7 +48,7 @@ while True:
         # 가우시안 블러
         dst = cv2.GaussianBlur(frame, (5,5), 0)
 
-        # 흑백으로 영상 변환
+        # 영상 변환
         output = detect_face(dst)
 
         # 화면 출력
