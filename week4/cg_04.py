@@ -51,7 +51,8 @@ cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
 print("camera initialized")
-gaussian_kernel_size = 10
+# 가우시안 필터 사이즈 : 무조건 홀수여야 함.
+gaussian_kernel_size = 15
 
 # 출력할 이미지 창에 trackbar 설정 (기본값 50, 최소 1 최대 255)
 cv2.namedWindow("FACE_res")
