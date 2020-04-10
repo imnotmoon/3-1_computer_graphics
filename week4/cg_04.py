@@ -46,6 +46,7 @@ while True:
         output = detect_face(dst)
 
         # 화면 출력
+        cv2.imshow("BLUR_FACE", dst)
         cv2.imshow("FACE", output)
 
         # escape key : esc 누르면 종료
@@ -53,6 +54,7 @@ while True:
             break
 
     # close window : windowName("Live Video Feed")
+    cv2.destroyWindow("BLUR_FACE")
     cv2.destroyWindow("FACE")
     # release camera
     cap.release()
