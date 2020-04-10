@@ -2,8 +2,8 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-_QUANTIZATED_HUE_ = 100  # 색조 : 70
-_QUANTIZATED_SATURATION_ = 150  # 채도 : 100
+_QUANTIZATED_HUE_ = 90  # 색조 : 70
+_QUANTIZATED_SATURATION_ = 128  # 채도 : 100
 _VAL_THRESHOLD_ = 30  # 임계값 : 50
 
 
@@ -23,7 +23,7 @@ def detect_face(frame, val_threshold):
     dst = cv2.calcBackProject([hsvt], [0, 1], hist_roi, [0, 180, 0, 256], 1)
 
     # 타원모양 커널을 사용하여 컨벌루션 : 신뢰도 값이 높은 픽셀 주변으로 타원을 그리고 그 범위까지 인정
-    disc = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+    disc = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
     cv2.filter2D(dst, -1, disc, dst)
 
     # 임계값을 이용하여 이진화
@@ -36,7 +36,7 @@ def detect_face(frame, val_threshold):
 
 
 # 모델이미지 로드
-model_image = cv2.imread("models.png")
+model_image = cv2.imread("palette.png")
 # HSV 변환
 palette = cv2.cvtColor(model_image, cv2.COLOR_BGR2HSV)
 # 모델 히스토그램 추출
@@ -45,12 +45,13 @@ hist_roi = cv2.calcHist([palette], [0, 1], None, [_QUANTIZATED_HUE_, _QUANTIZATE
 cv2.normalize(hist_roi, hist_roi, 0, 255, cv2.NORM_MINMAX)
 
 # 캠
-cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+#cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)       # Windows
+cap = cv2.VideoCapture(0)                       # Mac
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
 print("camera initialized")
-gaussian_kernel_size = 5
+gaussian_kernel_size = 10
 
 # 출력할 이미지 창에 trackbar 설정 (기본값 50, 최소 1 최대 255)
 cv2.namedWindow("FACE_res")
@@ -71,7 +72,7 @@ while True:
         _VAL_THRESHOLD_ = cv2.getTrackbarPos("_VAL_THRESHOLD", "FACE_res")
         result=detect_face(frame,_VAL_THRESHOLD_)
         # 화면 출력
-        cv2.imshow("FACE_ori", frame)
+        #cv2.imshow("FACE_ori", frame)
         cv2.imshow("FACE_res", result)
 
         # escape key : esc 누르면 종료
