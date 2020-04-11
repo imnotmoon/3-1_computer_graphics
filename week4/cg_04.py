@@ -1,11 +1,18 @@
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
+from msvcrt import getch
 
 _QUANTIZATED_HUE_ = 90  # 색조 : 70
 _QUANTIZATED_SATURATION_ = 128  # 채도 : 100
 _VAL_THRESHOLD_ = 30  # 임계값 : 50
 
+
+# 스페이스바 체크 함수
+def space_check():
+    while True:
+        if ord(getch()) == 32:
+            break
 
 # trackbar 수치 변동시 함수를 호출하는데, 딱히 필요한 기능이 없으므로 빈 함수 호출
 def nothing(x):
@@ -44,9 +51,12 @@ hist_roi = cv2.calcHist([palette], [0, 1], None, [_QUANTIZATED_HUE_, _QUANTIZATE
 # 모델 히스토그램 정규화
 cv2.normalize(hist_roi, hist_roi, 0, 255, cv2.NORM_MINMAX)
 
+print("캠을 켜려면 스페이스바를 누르십시오.")
+space_check()
+
 # 캠
-#cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)       # Windows
-cap = cv2.VideoCapture(0)                       # Mac
+cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)       # Windows
+#cap = cv2.VideoCapture(0)                       # Mac
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
@@ -66,6 +76,8 @@ while True:
     else:
         ret = False
 
+    print("창을 종료하려면 스페이스바를 누르십시오.")
+
     while ret:  # 카메라가 영상을 받아오면 True, 못받으면 break
         ret, frame = cap.read()
 
@@ -76,8 +88,8 @@ while True:
         #cv2.imshow("FACE_ori", frame)
         cv2.imshow("FACE_res", result)
 
-        # escape key : esc 누르면 종료
-        if cv2.waitKey(1) == 27:
+        # escape key : space bar 누르면 종료
+        if cv2.waitKey(1) == 32:
             break
 
     # close window : windowName("Live Video Feed")
