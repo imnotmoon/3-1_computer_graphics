@@ -26,6 +26,7 @@ def mouse_handler(event, x, y, flags, param) :
 
             #######################################  수정필요  ##########################################
 
+            #표시한 점 중 더 긴 가로/세로를 찾아낸다
             width = max(np.linalg.norm(src_np[1] - src_np[0]), np.linalg.norm(src_np[3] - src_np[2]))
             height = max(np.linalg.norm(src_np[3] - src_np[0]), np.linalg.norm(src_np[2] - src_np[1]))
 
