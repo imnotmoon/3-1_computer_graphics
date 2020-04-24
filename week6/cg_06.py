@@ -7,22 +7,35 @@ src = []
 
 # 마우스로 이미지에 점을 4개 찍고 점의 좌표를 src에 저장
 def mouse_handler(event, x, y, flags, param) :
+    # 콜백
     if event == cv2.EVENT_LBUTTONUP :
         img = model_image.copy()
+        # 클릭지점 저장
         src.append([x, y])
         for xx, yy in src:
+            # 빨간원
             cv2.circle(img, center=(xx,yy), radius=5, color=(0,0,255), thickness=-1)
 
         cv2.imshow('img', img)
 
+        # 빨간 원이 네개가 되면
         if len(src) == 4:
+            # float32 np array 타입으로 저장
             src_np = np.array(src, dtype=np.float32)
+
+
+            #######################################  수정필요  ##########################################
+
             width = max(np.linalg.norm(src_np[1] - src_np[0]), np.linalg.norm(src_np[3] - src_np[2]))
             height = max(np.linalg.norm(src_np[3] - src_np[0]), np.linalg.norm(src_np[2] - src_np[1]))
 
             dst_np = np.array([[0, 0], [width, 0], [width, height], [0, height]], dtype=np.float32)
 
+            ##########################################################################################
+
+            # 변환행렬 생성
             mat = cv2.getPerspectiveTransform(src=src_np, dst=dst_np)
+            # 변환영상
             result = cv2.warpPerspective(model_image, M=mat, dsize=(width, height))
 
             cv2.imshow('image', result)
