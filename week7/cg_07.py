@@ -8,11 +8,12 @@ def cv_space_check():
 
 
 ################################
-# 1. 번호판 영상을 준비한다.
+# 1. 번호판 영상을 준비한다
 #   ==> 다른 입력영상(input2)도 정상적으로 작동하는것 확인했습니다.
 
 # 2-B 영상의 크기는 번호판 보다 가로 세로가 10% 더 크게 되도록 조정할 것
 #   ==> 무슨 의미인지 모르겠습니다.
+#   ==> 점찍은 부분보다 조금 더 크게 받으라는 뜻인것 같아서 추가했습니다. (extend_src)
 
 # 3-A 적절한 thresholding 기법 사용하기
 #   ==> adaptive thresholding 사용했습니다. (방식은 가우시안, 블록사이즈와 C 파라미터 최적화 필요)
@@ -30,6 +31,23 @@ src = []
 
 # 실제 자동차 번호판의 비율 측정 후 만든 적절한 크기의 template
 dst_np = np.array([[0, 0], [400, 0], [0, 100], [400, 100]], dtype=np.float32)
+
+
+# 번호판 영상 10퍼센트 확대
+def extend_src(src_np):
+    ext_x = [0.95, 1.05, 0.95, 1.05]
+    ext_y = [0.95, 0.95, 1.05, 1.05]
+    src = []
+    cnt = 0
+    for x, y in src_np:
+        print(x, y)
+        x *= ext_x[cnt]
+        y *= ext_y[cnt]
+        src.append([x, y])
+        cnt += 1
+    return src
+
+
 
 
 # 마우스로 이미지에 점을 4개 찍고 점의 좌표를 src에 저장
@@ -62,9 +80,13 @@ while True:
         if len(src) == 4:  # 4개의 점이 찍혔을 경우 진행
             break
 
-
+# 10퍼센트 확대
+src = extend_src(src)
 # 점의 좌표를 float32 np array 타입으로 저장
 src_np = np.array(src, dtype=np.float32)
+
+
+# 번호판 영상 10퍼센트 확대
 
 # 변환행렬 생성
 mat = cv2.getPerspectiveTransform(src=src_np, dst=dst_np)

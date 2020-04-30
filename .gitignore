@@ -1,2 +1,7 @@
 
 *.icloud
+venv/lib/python3.8/site-packages/cv2/cv2.cpython-38-darwin.so
+venv/lib/python3.8/site-packages/cv2/data/haarcascade_frontalface_alt_tree.xml
+venv/lib/python3.8/site-packages/numpy/core/_multiarray_umath.cpython-38-darwin.so
+week3/models.png
+week4/models.png
