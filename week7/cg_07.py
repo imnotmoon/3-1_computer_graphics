@@ -43,7 +43,7 @@ def extend_src(src_np):
         print(x, y)
         x *= ext_x[cnt]
         y *= ext_y[cnt]
-        src.append([x, y])
+        src.append([int(x), int(y)])
         cnt += 1
     return src
 
@@ -118,7 +118,7 @@ cv_space_check()
 
 # 4-A 이진 모폴로지 연산을 이용하여 잡음제거 및 윤곽선 스무싱 (4-B 적절한 크기와 형태의 SE, 연산의 종류 선택)
 # (임의로 SE = 5*5 직사각형, 연산 종류 = 열기->닫기 진행했습니다)
-kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
 thres = cv2.morphologyEx(thres, cv2.MORPH_OPEN, kernel)
 thres = cv2.morphologyEx(thres, cv2.MORPH_CLOSE, kernel)
 cv2.imshow('res3', thres)
